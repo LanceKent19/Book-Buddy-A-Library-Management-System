@@ -92,11 +92,9 @@ public class BookBuddy {
                     } else if (choiceAdminDashboard == 7 && isSuperAdmin) {
                         accountSettingDashboard.displayAccountSettings();
                     } else if (choiceAdminDashboard == 7) {
-                        System.out.println("Invalid Inputs. Please Try Again.");
-                        System.out.println("-------------------------------");
+                        InvalidInputs();
                     } else {
-                        System.out.println("Invalid Inputs. Please Try Again.");
-                        System.out.println("-------------------------------");
+                        InvalidInputs();
                     }
                 }
             } else if (chooseDashboard == 2) {
@@ -132,14 +130,16 @@ public class BookBuddy {
                     System.out.println("Going back to the Home Page");
                     System.out.println("-------------------------------");
                 } else {
-                    System.out.println("Invalid Inputs. Please Try Again.");
-                    System.out.println("-------------------------------");
+                    InvalidInputs();
                 }
             } else {
-                System.out.println("Invalid Inputs. Please Try Again.");
-                System.out.println("-------------------------------");
+                InvalidInputs();
             }
         }
+    }
+    public void InvalidInputs(){
+        System.out.println("Invalid Inputs. Please Try Again.");
+        System.out.println("-------------------------------");
     }
 
 }
