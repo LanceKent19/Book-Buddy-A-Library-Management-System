@@ -44,6 +44,7 @@ public class DisplayDashboards {
                 System.out.print("Delete Book ID: ");
                 int id = scanner.nextInt();
                 scanner.nextLine();
+                System.out.println("-------------------------------");
                 if (bookDao.deleteBook(id)) {
                     System.out.println("Book ID " + id + " Deleted");
                     System.out.println("-------------------------------");

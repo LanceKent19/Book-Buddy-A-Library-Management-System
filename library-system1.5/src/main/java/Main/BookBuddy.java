@@ -30,7 +30,7 @@ public class BookBuddy {
     private final BorrowBooksDashboard borrowBooksDashboard;
     private final ReturnBookDashboard returnBookDashboard;
     private final AccountSettingDashboard accountSettingDashboard;
-
+    private final SuperAdminDashboard superAdminDashboard;
     // Constructor initializes all dependencies
     public BookBuddy() {
         // Core dependencies
@@ -55,9 +55,11 @@ public class BookBuddy {
         this.borrowBooksDashboard = new BorrowBooksDashboard();
         this.returnBookDashboard = new ReturnBookDashboard(adminDAO);
         this.accountSettingDashboard = new AccountSettingDashboard(adminDAO, scanner);
+        this.superAdminDashboard = new SuperAdminDashboard(scanner, adminDAO, adminDashboard);
     }
 
     public void start() {
+        // System's Introduction
         System.out.println("Book Buddy: A Library Management System. [Version 1.0.0.0]");
         System.out.println("Javarian Corporation. All rights reserved.");
 
@@ -100,18 +102,7 @@ public class BookBuddy {
             } else if (chooseDashboard == 2) {
                 // Registration logic (if needed)
                 while (true) {
-                    System.out.print("Super Admin Username: ");
-                    String username = scanner.nextLine();
-                    System.out.print("Super Admin Password: ");
-                    String password = scanner.nextLine();
-                    if (adminDAO.validateSuperAdmin(username, password)) {
-                        System.out.println("-------------------------------");
-                        adminDashboard.registerDashboard();
-                        break;
-                    } else {
-                        System.out.println("Wrong Super Admin Credentials");
-                        System.out.println("-------------------------------");
-                    }
+                    superAdminDashboard.superAdmin();
                 }
             } else if (chooseDashboard == 3) {
                 // Exit program
@@ -129,6 +120,7 @@ public class BookBuddy {
                 } else if (choice == 2) {
                     System.out.println("Going back to the Home Page");
                     System.out.println("-------------------------------");
+                    // Return to the Menu
                 } else {
                     InvalidInputs();
                 }
