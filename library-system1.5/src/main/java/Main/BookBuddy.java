@@ -124,6 +124,8 @@ public class BookBuddy {
                 } else {
                     InvalidInputs();
                 }
+            } else if (chooseDashboard == 4) {
+                adminDashboard.helpDashboard();
             } else {
                 InvalidInputs();
             }
