@@ -13,16 +13,15 @@ public class AdminDashboard {
         this.scanner = scanner;
     }
 
-    public byte frontDashboard() {
+    public String frontDashboard() {
         System.out.println("[1] Login");
         System.out.println("[2] Register");
-        System.out.println("[3] Close the Program");
-        System.out.println("[4] Help");
+        System.out.println("[3] Help");
+        System.out.println("[4] Exit the Program");
         System.out.print("Enter your Option: ");
-        byte choice = scanner.nextByte();
-        scanner.nextLine();
+        String input = scanner.nextLine();
         System.out.println("-------------------------------");
-        return choice;
+        return input;
     }
 
     public Admin loginDashboard() {
@@ -52,7 +51,6 @@ public class AdminDashboard {
         }
 
     }
-
     public void helpDashboard() {
         System.out.println("General Information can be found at ");
         System.out.println("http://localhost/Portfolio-Magollado/lance/index.php\n");
@@ -63,30 +61,6 @@ public class AdminDashboard {
         System.out.println("/q or back    - Back Command");
         System.out.println("-------------------------------");
     }
-
-    private String handleCommands(String input) {
-        input = input.trim().toLowerCase();
-        switch (input) {
-            case "/q":
-                System.out.println("Going back to the previous menu...");
-                return null;
-            case "/exit":
-            case "/x":
-                System.out.println("Are you sure you want to exit? [y/n]");
-                String confirmExit = scanner.nextLine().trim().toLowerCase();
-                if (confirmExit.equals("y")) {
-                    System.out.println("Exiting the system. Goodbye!");
-                    System.exit(0);
-                }
-                return null;
-            case "/h":
-            case "help":
-                helpDashboard();
-                return null;
-            default:
-                return input; // Return valid user input for further processing
-        }
-}
     public void registerDashboard(){
         System.out.println("Create Account Dashboard");
         while (true) {

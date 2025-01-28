@@ -5,11 +5,12 @@ import Dashboard.*;
 import Database.Database;
 import Implementation.*;
 import Model.*;
+import Utility.CommandHandler;
+import Utility.InputUtility;
 
 import java.util.Scanner;
 
 public class BookBuddy {
-
     // Dependencies
     private final Database database;
     private final BookDAO bookDao;
@@ -20,7 +21,7 @@ public class BookBuddy {
     private final BorrowBookDAO borrowBookDAO;
     private final ReturnBookDAO returnBookDAO;
     private final Scanner scanner;
-
+    private final InputUtility inputUtility;
     // Dashboards
     private final AdminDashboard adminDashboard;
     private final DisplayDashboards displayDashboards;
@@ -31,8 +32,10 @@ public class BookBuddy {
     private final ReturnBookDashboard returnBookDashboard;
     private final AccountSettingDashboard accountSettingDashboard;
     private final SuperAdminDashboard superAdminDashboard;
+
     // Constructor initializes all dependencies
     public BookBuddy() {
+
         // Core dependencies
         this.database = new Database();
         this.scanner = new Scanner(System.in);
@@ -56,55 +59,68 @@ public class BookBuddy {
         this.returnBookDashboard = new ReturnBookDashboard(adminDAO);
         this.accountSettingDashboard = new AccountSettingDashboard(adminDAO, scanner);
         this.superAdminDashboard = new SuperAdminDashboard(scanner, adminDAO, adminDashboard);
-    }
 
+        // Utility
+        this.inputUtility = new InputUtility();
+    }
     public void start() {
         // System's Introduction
         System.out.println("Book Buddy: A Library Management System. [Version 1.0.0.0]");
         System.out.println("Javarian Corporation. All rights reserved.");
 
+        CommandHandler commandHandler = new CommandHandler(adminDashboard);
         while (true) {
             // Show front dashboard and get user's choice
-            byte chooseDashboard = adminDashboard.frontDashboard();
+            String chooseDashboard = adminDashboard.frontDashboard();
 
-            if (chooseDashboard == 1) {
-                // Try login
-                Admin admin = adminDashboard.loginDashboard();
-                if (admin == null) {
-                    continue; // If login fails (either wrong credentials or deactivated account), show the front dashboard again
-                }
-                // Login successful, proceed with the admin dashboard
-                while (true) {
-                    boolean isSuperAdmin = adminDAO.isSuperAdmin(admin);
-                    byte choiceAdminDashboard = adminDashboard.adminDashboard(isSuperAdmin);
-                    if (choiceAdminDashboard == 1) {
-                        displayDashboards.displayOne(booksDashboard, bookDao, scanner);
-                    } else if (choiceAdminDashboard == 2) {
-                        displayDashboards.displayTwo(authorsDashboard, authorDao, scanner);
-                    } else if (choiceAdminDashboard == 3) {
-                        displayDashboards.displayThree(publishersDashboard, publisherDAO, scanner);
-                    } else if (choiceAdminDashboard == 4) {
-                        displayDashboards.displayFour(borrowBooksDashboard, scanner, borrowBookDAO, admin);
-                    } else if (choiceAdminDashboard == 5) {
-                        displayDashboards.displayFive(returnBookDashboard, scanner, returnBookDAO, returnBook, admin);
-                    } else if (choiceAdminDashboard == 6) {
-                        boolean isLoggedOut = displayDashboards.displaySix(scanner, admin);
-                        if (isLoggedOut)
-                            break;
-                    } else if (choiceAdminDashboard == 7 && isSuperAdmin) {
-                        accountSettingDashboard.displayAccountSettings();
-                    } else if (choiceAdminDashboard == 7) {
-                        InvalidInputs();
-                    } else {
-                        InvalidInputs();
+            if(commandHandler.handleCommand(chooseDashboard)){
+                continue;
+            }
+            switch (chooseDashboard) {
+                case "1" -> {
+                    // Try login
+                    Admin admin = adminDashboard.loginDashboard();
+                    if (admin == null) {
+                        continue; // If login fails (either wrong credentials or deactivated account), show the front dashboard again
+                    }
+                    // Login successful, proceed with the admin dashboard
+                    while (true) {
+                        boolean isSuperAdmin = adminDAO.isSuperAdmin(admin);
+                        byte choiceAdminDashboard = adminDashboard.adminDashboard(isSuperAdmin);
+                        if (choiceAdminDashboard == 1) {
+                            displayDashboards.displayOne(booksDashboard, bookDao, scanner);
+                        } else if (choiceAdminDashboard == 2) {
+                            displayDashboards.displayTwo(authorsDashboard, authorDao, scanner);
+                        } else if (choiceAdminDashboard == 3) {
+                            displayDashboards.displayThree(publishersDashboard, publisherDAO, scanner);
+                        } else if (choiceAdminDashboard == 4) {
+                            displayDashboards.displayFour(borrowBooksDashboard, scanner, borrowBookDAO, admin);
+                        } else if (choiceAdminDashboard == 5) {
+                            displayDashboards.displayFive(returnBookDashboard, scanner, returnBookDAO, returnBook, admin);
+                        } else if (choiceAdminDashboard == 6) {
+                            boolean isLoggedOut = displayDashboards.displaySix(scanner, admin);
+                            if (isLoggedOut)
+                                break;
+                        } else if (choiceAdminDashboard == 7 && isSuperAdmin) {
+                            accountSettingDashboard.displayAccountSettings();
+                        } else if (choiceAdminDashboard == 7) {
+                            inputUtility.InvalidInputs();
+                        } else {
+                            inputUtility.InvalidInputs();
+                        }
                     }
                 }
-            } else if (chooseDashboard == 2) {
-                // Registration logic (if needed)
-                while (true) {
-                    superAdminDashboard.superAdmin();
+                case "2" -> {
+                    // Registration logic (if needed)
+                    while (true) {
+                        superAdminDashboard.superAdmin();
+                    }
+                    // Registration logic (if needed)
                 }
-            } else if (chooseDashboard == 3) {
+                case "3" -> {
+                    adminDashboard.helpDashboard();
+                }
+                case "4" -> {
                 // Exit program
                 System.out.println("Are you sure you want to exit the program? ");
                 System.out.println("[1] YES");
@@ -122,18 +138,11 @@ public class BookBuddy {
                     System.out.println("-------------------------------");
                     // Return to the Menu
                 } else {
-                    InvalidInputs();
+                    inputUtility.InvalidInputs();
                 }
-            } else if (chooseDashboard == 4) {
-                adminDashboard.helpDashboard();
-            } else {
-                InvalidInputs();
+                }
+                default -> inputUtility.InvalidInputs();
             }
         }
     }
-    public void InvalidInputs(){
-        System.out.println("Invalid Inputs. Please Try Again.");
-        System.out.println("-------------------------------");
-    }
-
 }
