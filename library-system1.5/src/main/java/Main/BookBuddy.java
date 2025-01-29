@@ -6,6 +6,7 @@ import Database.Database;
 import Implementation.*;
 import Model.*;
 import Utility.CommandHandler;
+import Utility.ExitHandler;
 import Utility.InputUtility;
 
 import java.util.Scanner;
@@ -21,7 +22,9 @@ public class BookBuddy {
     private final BorrowBookDAO borrowBookDAO;
     private final ReturnBookDAO returnBookDAO;
     private final Scanner scanner;
+    // Utilities
     private final InputUtility inputUtility;
+    private final ExitHandler exitHandler;
     // Dashboards
     private final AdminDashboard adminDashboard;
     private final DisplayDashboards displayDashboards;
@@ -62,13 +65,15 @@ public class BookBuddy {
 
         // Utility
         this.inputUtility = new InputUtility();
+        this.exitHandler = new ExitHandler(scanner);
     }
     public void start() {
         // System's Introduction
         System.out.println("Book Buddy: A Library Management System. [Version 1.0.0.0]");
         System.out.println("Javarian Corporation. All rights reserved.");
 
-        CommandHandler commandHandler = new CommandHandler(adminDashboard);
+        CommandHandler commandHandler = new CommandHandler(adminDashboard, scanner);
+
         while (true) {
             // Show front dashboard and get user's choice
             String chooseDashboard = adminDashboard.frontDashboard();
@@ -111,35 +116,15 @@ public class BookBuddy {
                     }
                 }
                 case "2" -> {
-                    // Registration logic (if needed)
                     while (true) {
                         superAdminDashboard.superAdmin();
                     }
-                    // Registration logic (if needed)
                 }
                 case "3" -> {
                     adminDashboard.helpDashboard();
                 }
                 case "4" -> {
-                // Exit program
-                System.out.println("Are you sure you want to exit the program? ");
-                System.out.println("[1] YES");
-                System.out.println("[2] NO");
-                System.out.print("Enter your Option: ");
-                byte choice = scanner.nextByte();
-                scanner.nextLine();
-                System.out.println("-------------------------------");
-                if (choice == 1) {
-                    System.out.println("Thank you for using our system. Goodbye!!");
-                    System.out.println("-------------------------------");
-                    System.exit(0); // Exit the program
-                } else if (choice == 2) {
-                    System.out.println("Going back to the Home Page");
-                    System.out.println("-------------------------------");
-                    // Return to the Menu
-                } else {
-                    inputUtility.InvalidInputs();
-                }
+                    exitHandler.confirmExit();
                 }
                 default -> inputUtility.InvalidInputs();
             }

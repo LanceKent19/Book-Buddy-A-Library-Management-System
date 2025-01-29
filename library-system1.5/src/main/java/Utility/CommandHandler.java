@@ -2,12 +2,16 @@ package Utility;
 
 import Dashboard.AdminDashboard;
 
+import java.util.Scanner;
+
 public class CommandHandler {
 
     private final AdminDashboard adminDashboard;
+    private final ExitHandler exitHandler;
 
-    public CommandHandler(AdminDashboard adminDashboard) {
+    public CommandHandler(AdminDashboard adminDashboard, Scanner scanner) {
         this.adminDashboard = adminDashboard;
+        this.exitHandler = new ExitHandler(scanner);
     }
 
     public boolean handleCommand(String input) {
@@ -21,8 +25,7 @@ public class CommandHandler {
                 return true; // Command handled
             }
             case "/x", "/exit" -> {
-                System.out.println("Exiting the system. Goodbye!");
-                System.exit(0);
+                exitHandler.confirmExit();
             }
             case "/h", "/help" -> {
                 adminDashboard.helpDashboard();
